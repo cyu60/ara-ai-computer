@@ -3,177 +3,182 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ara AI Computer</title>
+<title>Ara AI Computer — DayDreamers</title>
+<link rel="icon" type="image/png" href="logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0a0f;
-    --surface: #12121a;
-    --surface-2: #1a1a26;
-    --border: #2a2a3a;
-    --border-active: #4a4a6a;
-    --text: #e0e0ec;
-    --text-dim: #7a7a9a;
-    --text-muted: #4a4a6a;
-    --accent: #6366f1;
-    --accent-dim: #4f46e5;
-    --accent-glow: rgba(99, 102, 241, 0.15);
-    --green: #34d399;
-    --green-dim: rgba(52, 211, 153, 0.1);
-    --amber: #fbbf24;
-    --red: #f87171;
-    --radius: 8px;
-    --font-mono: 'JetBrains Mono', 'IBM Plex Mono', monospace;
-    --font-display: 'Space Grotesk', sans-serif;
+    --bg: #f4efe8;
+    --fg: #10111a;
+    --fg-soft: #23263a;
+    --muted: #70675f;
+    --accent: #2652e6;
+    --accent-light: #dfe7ff;
+    --gold: #d3a14a;
+    --border: rgba(16,17,26,0.10);
+    --card: #fbf7f1;
+    --section-alt: #ece5da;
+    --radius: 14px;
+    --hero-bg: #10111a;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
+    font-family: 'DM Sans', -apple-system, sans-serif;
     background: var(--bg);
-    color: var(--text);
-    font-family: var(--font-mono);
-    font-size: 13px;
-    line-height: 1.6;
+    color: var(--fg);
+    line-height: 1.7;
     height: 100vh;
     overflow: hidden;
+    -webkit-font-smoothing: antialiased;
   }
 
-  /* --- Scanline overlay --- */
+  /* Noise texture */
   body::after {
     content: '';
     position: fixed;
     inset: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0, 0, 0, 0.03) 2px,
-      rgba(0, 0, 0, 0.03) 4px
-    );
     pointer-events: none;
     z-index: 9999;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
   /* --- Layout --- */
   .shell {
     display: grid;
-    grid-template-columns: 260px 1fr;
-    grid-template-rows: 48px 1fr;
+    grid-template-columns: 280px 1fr;
     height: 100vh;
-  }
-
-  /* --- Top bar --- */
-  .topbar {
-    grid-column: 1 / -1;
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-    gap: 16px;
-  }
-
-  .topbar-logo {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 16px;
-    letter-spacing: -0.5px;
-    color: var(--text);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .topbar-logo .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--green);
-    box-shadow: 0 0 8px var(--green);
-    animation: pulse 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-
-  .topbar-sep {
-    width: 1px;
-    height: 20px;
-    background: var(--border);
-  }
-
-  .topbar-status {
-    font-size: 11px;
-    color: var(--text-dim);
-    font-weight: 400;
-  }
-
-  .topbar-status span {
-    color: var(--green);
-    font-weight: 500;
   }
 
   /* --- Sidebar --- */
   .sidebar {
-    background: var(--surface);
-    border-right: 1px solid var(--border);
-    padding: 16px 0;
-    overflow-y: auto;
+    background: var(--hero-bg);
+    color: #fff;
     display: flex;
     flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .sidebar::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    right: -30%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(38,82,230,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: sidebar-glow 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes sidebar-glow {
+    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(-15px, 10px) scale(1.1); opacity: 0.6; }
+  }
+
+  .sidebar-header {
+    padding: 1.5rem 1.25rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .sidebar-logo img {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+  }
+
+  .sidebar-logo span {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.05rem;
+    color: rgba(255,255,255,0.85);
+  }
+
+  .sidebar-tagline {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-top: 0.6rem;
+    border: 1px solid rgba(211,161,74,0.25);
+    padding: 0.3rem 0.7rem;
+    border-radius: 100px;
+    display: inline-block;
   }
 
   .sidebar-label {
-    font-size: 10px;
-    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--text-muted);
-    padding: 0 16px;
-    margin-bottom: 8px;
+    color: rgba(255,255,255,0.25);
+    padding: 0 1.25rem;
+    margin: 1rem 0 0.5rem;
+    position: relative;
+    z-index: 1;
   }
 
   .agent-list {
     list-style: none;
     flex: 1;
+    overflow-y: auto;
+    position: relative;
+    z-index: 1;
+    padding-bottom: 1rem;
   }
 
+  .agent-list::-webkit-scrollbar { width: 4px; }
+  .agent-list::-webkit-scrollbar-track { background: transparent; }
+  .agent-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
   .agent-item {
-    padding: 10px 16px;
+    padding: 0.7rem 1.25rem;
     cursor: pointer;
     border-left: 2px solid transparent;
-    transition: all 0.15s ease;
+    transition: all 0.2s ease;
     position: relative;
   }
 
   .agent-item:hover {
-    background: var(--surface-2);
+    background: rgba(255,255,255,0.04);
   }
 
   .agent-item.active {
-    background: var(--accent-glow);
+    background: rgba(38,82,230,0.12);
     border-left-color: var(--accent);
   }
 
   .agent-item .agent-name {
-    font-family: var(--font-display);
-    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
     font-weight: 600;
-    color: var(--text);
-    margin-bottom: 2px;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 1px;
   }
 
   .agent-item.active .agent-name {
-    color: #a5b4fc;
+    color: var(--accent-light);
   }
 
   .agent-item .agent-desc {
-    font-size: 11px;
-    color: var(--text-dim);
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.35);
     line-height: 1.4;
     white-space: nowrap;
     overflow: hidden;
@@ -182,32 +187,42 @@
 
   .agent-item .agent-tag {
     display: inline-block;
-    font-size: 9px;
-    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.55rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding: 2px 6px;
+    padding: 0.15rem 0.45rem;
     border-radius: 3px;
-    margin-top: 4px;
+    margin-top: 0.3rem;
   }
 
-  .tag-agent { background: var(--accent-glow); color: #818cf8; }
-  .tag-hook { background: var(--green-dim); color: var(--green); }
+  .tag-agent {
+    background: rgba(38,82,230,0.15);
+    color: rgba(150,170,255,0.8);
+  }
 
   .sidebar-footer {
-    padding: 12px 16px;
-    border-top: 1px solid var(--border);
-    font-size: 10px;
-    color: var(--text-muted);
-    line-height: 1.5;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    position: relative;
+    z-index: 1;
   }
 
-  .sidebar-footer code {
-    background: var(--surface-2);
-    padding: 1px 4px;
-    border-radius: 3px;
-    font-size: 10px;
+  .sidebar-footer-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 0.03em;
   }
+
+  .sidebar-footer-link {
+    color: rgba(255,255,255,0.35);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .sidebar-footer-link:hover { color: var(--gold); }
 
   /* --- Main chat area --- */
   .main {
@@ -218,116 +233,107 @@
   }
 
   .chat-header {
-    padding: 16px 24px;
+    padding: 1.25rem 2rem;
     border-bottom: 1px solid var(--border);
-    background: var(--surface);
+    background: var(--card);
   }
 
   .chat-header h2 {
-    font-family: var(--font-display);
-    font-size: 15px;
-    font-weight: 600;
-    margin-bottom: 2px;
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.15rem;
+    font-weight: 400;
+    color: var(--fg);
+    margin-bottom: 0.1rem;
+  }
+
+  .chat-header h2 em {
+    font-style: italic;
+    color: var(--accent);
   }
 
   .chat-header p {
-    font-size: 11px;
-    color: var(--text-dim);
+    font-size: 0.78rem;
+    color: var(--muted);
   }
 
   .messages {
     flex: 1;
     overflow-y: auto;
-    padding: 24px;
+    padding: 2rem;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 1.25rem;
     scroll-behavior: smooth;
   }
 
-  .messages::-webkit-scrollbar { width: 6px; }
+  .messages::-webkit-scrollbar { width: 5px; }
   .messages::-webkit-scrollbar-track { background: transparent; }
   .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
   .msg {
-    max-width: 680px;
-    animation: msgIn 0.25s ease-out;
+    max-width: 640px;
+    animation: fade-up 0.3s ease-out;
   }
 
-  @keyframes msgIn {
-    from { opacity: 0; transform: translateY(8px); }
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
-  .msg.user {
-    align-self: flex-end;
-  }
+  .msg.user { align-self: flex-end; }
 
   .msg-meta {
-    font-size: 10px;
-    color: var(--text-muted);
-    margin-bottom: 4px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    color: var(--muted);
+    margin-bottom: 0.3rem;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 0.4rem;
+    letter-spacing: 0.03em;
   }
 
   .msg.user .msg-meta { justify-content: flex-end; }
 
   .msg-bubble {
-    padding: 12px 16px;
+    padding: 0.85rem 1.15rem;
     border-radius: var(--radius);
-    font-size: 13px;
-    line-height: 1.65;
+    font-size: 0.88rem;
+    line-height: 1.7;
   }
 
   .msg.assistant .msg-bubble {
-    background: var(--surface);
+    background: var(--card);
     border: 1px solid var(--border);
-    color: var(--text);
+    color: var(--fg-soft);
   }
 
   .msg.user .msg-bubble {
-    background: var(--accent-dim);
-    border: 1px solid var(--accent);
-    color: #e0e7ff;
+    background: var(--hero-bg);
+    color: rgba(255,255,255,0.9);
   }
 
-  .msg-bubble strong { color: #a5b4fc; font-weight: 600; }
-
-  .msg.system {
-    align-self: center;
-    max-width: 500px;
-  }
-
-  .msg.system .msg-bubble {
-    background: transparent;
-    border: 1px dashed var(--border);
-    color: var(--text-dim);
-    font-size: 11px;
-    text-align: center;
-    padding: 8px 16px;
-  }
+  .msg-bubble strong { color: var(--accent); font-weight: 600; }
 
   /* --- Typing indicator --- */
   .typing {
     display: none;
     align-self: flex-start;
-    padding: 12px 16px;
-    background: var(--surface);
+    padding: 0.85rem 1.15rem;
+    background: var(--card);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    gap: 4px;
+    gap: 5px;
     align-items: center;
   }
 
   .typing.visible { display: flex; }
 
   .typing-dot {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
-    background: var(--text-dim);
+    background: var(--muted);
     animation: typingBounce 1.2s ease-in-out infinite;
   }
 
@@ -335,20 +341,20 @@
   .typing-dot:nth-child(3) { animation-delay: 0.3s; }
 
   @keyframes typingBounce {
-    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-    30% { transform: translateY(-4px); opacity: 1; }
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.3; }
+    30% { transform: translateY(-3px); opacity: 1; }
   }
 
   /* --- Input area --- */
   .input-area {
-    padding: 16px 24px;
+    padding: 1.15rem 2rem;
     border-top: 1px solid var(--border);
-    background: var(--surface);
+    background: var(--card);
   }
 
   .input-row {
     display: flex;
-    gap: 10px;
+    gap: 0.65rem;
     align-items: flex-end;
   }
 
@@ -359,62 +365,65 @@
 
   .input-wrap textarea {
     width: 100%;
-    background: var(--surface-2);
+    background: var(--bg);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    color: var(--text);
-    font-family: var(--font-mono);
-    font-size: 13px;
-    padding: 12px 16px;
+    color: var(--fg);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    padding: 0.8rem 1rem;
     resize: none;
     outline: none;
     line-height: 1.5;
     min-height: 44px;
     max-height: 120px;
-    transition: border-color 0.15s;
+    transition: border-color 0.2s, box-shadow 0.2s;
   }
 
   .input-wrap textarea:focus {
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-glow);
+    box-shadow: 0 0 0 3px rgba(38,82,230,0.08);
   }
 
   .input-wrap textarea::placeholder {
-    color: var(--text-muted);
+    color: rgba(112,103,95,0.5);
   }
 
   .send-btn {
-    background: var(--accent);
+    background: var(--hero-bg);
     border: none;
     border-radius: var(--radius);
     color: white;
-    font-family: var(--font-mono);
-    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
     font-weight: 600;
-    padding: 12px 20px;
+    padding: 0.8rem 1.5rem;
     cursor: pointer;
-    transition: all 0.15s;
+    transition: all 0.2s;
     white-space: nowrap;
   }
 
-  .send-btn:hover { background: #5558e6; transform: translateY(-1px); }
-  .send-btn:active { transform: translateY(0); }
-  .send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .send-btn:hover { background: var(--accent); }
+  .send-btn:active { transform: scale(0.98); }
+  .send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
   .input-hint {
-    font-size: 10px;
-    color: var(--text-muted);
-    margin-top: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    color: var(--muted);
+    margin-top: 0.5rem;
     display: flex;
     justify-content: space-between;
+    letter-spacing: 0.02em;
+    opacity: 0.6;
   }
 
   .input-hint kbd {
-    background: var(--surface-2);
+    background: var(--bg);
     border: 1px solid var(--border);
     padding: 0 4px;
     border-radius: 3px;
-    font-size: 9px;
+    font-size: 0.55rem;
   }
 
   /* --- Welcome state --- */
@@ -424,62 +433,67 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 40px;
+    padding: 3rem;
     text-align: center;
   }
 
   .welcome-icon {
-    width: 64px;
-    height: 64px;
-    border-radius: 16px;
-    background: linear-gradient(135deg, var(--accent-glow), var(--surface-2));
-    border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 28px;
-    margin-bottom: 20px;
+    width: 56px;
+    height: 56px;
+    margin-bottom: 1.5rem;
+  }
+
+  .welcome-icon img {
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
   }
 
   .welcome h3 {
-    font-family: var(--font-display);
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 8px;
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+    color: var(--fg);
+  }
+
+  .welcome h3 em {
+    font-style: italic;
+    color: var(--accent);
   }
 
   .welcome p {
-    color: var(--text-dim);
-    font-size: 12px;
-    max-width: 400px;
-    line-height: 1.6;
+    color: var(--muted);
+    font-size: 0.88rem;
+    max-width: 420px;
+    line-height: 1.7;
   }
 
   .welcome-suggestions {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 24px;
+    gap: 0.5rem;
+    margin-top: 1.75rem;
     justify-content: center;
-    max-width: 500px;
+    max-width: 520px;
   }
 
   .suggestion {
-    background: var(--surface);
+    background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 8px 14px;
-    font-size: 11px;
-    color: var(--text-dim);
+    border-radius: 100px;
+    padding: 0.5rem 1rem;
+    font-size: 0.78rem;
+    color: var(--muted);
     cursor: pointer;
-    transition: all 0.15s;
-    font-family: var(--font-mono);
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
   }
 
   .suggestion:hover {
     border-color: var(--accent);
-    color: var(--text);
-    background: var(--accent-glow);
+    color: var(--accent);
+    background: var(--accent-light);
   }
 
   /* --- Error toast --- */
@@ -488,12 +502,12 @@
     bottom: 100px;
     left: 50%;
     transform: translateX(-50%) translateY(20px);
-    background: #2d1b1b;
-    border: 1px solid #5c2828;
-    color: var(--red);
-    padding: 10px 20px;
+    background: #fff0f0;
+    border: 1px solid rgba(200,50,50,0.2);
+    color: #c83232;
+    padding: 0.65rem 1.25rem;
     border-radius: var(--radius);
-    font-size: 12px;
+    font-size: 0.78rem;
     opacity: 0;
     transition: all 0.3s ease;
     z-index: 100;
@@ -515,39 +529,37 @@
 <body>
 
 <div class="shell">
-  <!-- Top bar -->
-  <div class="topbar">
-    <div class="topbar-logo">
-      <div class="dot"></div>
-      ara
-    </div>
-    <div class="topbar-sep"></div>
-    <div class="topbar-status">
-      system <span>active</span> &middot; 5 agents &middot; 4 hooks
-    </div>
-  </div>
-
   <!-- Sidebar -->
   <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <img src="logo.png" alt="DayDreamers">
+        <span>DayDreamers</span>
+      </div>
+      <div class="sidebar-tagline">Ara AI Computer</div>
+    </div>
+
     <div class="sidebar-label">Agents</div>
     <ul class="agent-list" id="agentList"></ul>
+
     <div class="sidebar-footer">
-      <strong style="color:var(--text-dim)">Ara AI Computer</strong><br>
-      Hackathon Demo &middot; <code>v0.1</code>
+      <div class="sidebar-footer-text">
+        <a href="https://daydreamers.club" class="sidebar-footer-link">daydreamers.club</a> &middot; <a href="https://github.com/cyu60/ara-ai-computer" class="sidebar-footer-link">github</a>
+      </div>
     </div>
   </div>
 
   <!-- Main -->
   <div class="main">
     <div class="chat-header" id="chatHeader">
-      <h2 id="headerTitle">Select an agent</h2>
+      <h2 id="headerTitle">Select an <em>agent</em></h2>
       <p id="headerDesc">Choose a use case from the sidebar to start chatting.</p>
     </div>
 
     <div class="messages" id="messages">
       <div class="welcome" id="welcome">
-        <div class="welcome-icon">&#x25C8;</div>
-        <h3>Your AI Computer</h3>
+        <div class="welcome-icon"><img src="logo.png" alt=""></div>
+        <h3>Your AI <em>Computer</em></h3>
         <p>Pick an agent from the sidebar — each one is a specialized workflow running on Ara's cloud runtime with its own sandbox, memory, and tools.</p>
         <div class="welcome-suggestions" id="suggestions"></div>
       </div>
@@ -578,7 +590,6 @@
 
 <script>
 const CONFIG = {
-  // Proxied through /api/run to avoid CORS
   runEndpoint: '/api/run',
 };
 
@@ -643,7 +654,7 @@ const AGENTS = [
     name: 'Reply Drafter',
     desc: 'Context-aware reply drafting',
     type: 'agent',
-    suggestions: ['Say yes to the dinner invite', 'Decline politely — I\'m busy that day'],
+    suggestions: ['Say yes to the dinner invite', "Decline politely — I'm busy that day"],
   },
   {
     id: 'quiz-master',
@@ -661,12 +672,10 @@ const AGENTS = [
   },
 ];
 
-// --- State ---
 let activeAgent = null;
 let conversations = {};
 let sending = false;
 
-// --- DOM ---
 const agentListEl = document.getElementById('agentList');
 const messagesEl = document.getElementById('messages');
 const welcomeEl = document.getElementById('welcome');
@@ -678,13 +687,12 @@ const headerTitle = document.getElementById('headerTitle');
 const headerDesc = document.getElementById('headerDesc');
 const toastEl = document.getElementById('toast');
 
-// --- Render sidebar ---
 function renderSidebar() {
   agentListEl.innerHTML = AGENTS.map(a => `
     <li class="agent-item${activeAgent?.id === a.id ? ' active' : ''}" data-id="${a.id}">
       <div class="agent-name">${a.name}</div>
       <div class="agent-desc">${a.desc}</div>
-      <span class="agent-tag tag-${a.type}">${a.type}</span>
+      <span class="agent-tag tag-${a.type}">agent</span>
     </li>
   `).join('');
 
@@ -693,101 +701,76 @@ function renderSidebar() {
   });
 }
 
-// --- Select agent ---
 function selectAgent(id) {
   activeAgent = AGENTS.find(a => a.id === id);
   if (!activeAgent) return;
-
   if (!conversations[id]) conversations[id] = [];
-
   inputEl.disabled = false;
   sendBtn.disabled = false;
-  headerTitle.textContent = activeAgent.name;
+  headerTitle.innerHTML = activeAgent.name.replace(/(\w+)$/, '<em>$1</em>');
   headerDesc.textContent = activeAgent.desc;
-
   renderSidebar();
   renderMessages();
   inputEl.focus();
 }
 
-// --- Render messages ---
 function renderMessages() {
   if (!activeAgent) return;
-
   const msgs = conversations[activeAgent.id] || [];
-
   if (msgs.length === 0) {
     welcomeEl.style.display = 'flex';
     suggestionsEl.innerHTML = (activeAgent.suggestions || []).map(s =>
       `<div class="suggestion" data-msg="${s.replace(/"/g, '&quot;')}">${s}</div>`
     ).join('');
     suggestionsEl.querySelectorAll('.suggestion').forEach(el => {
-      el.addEventListener('click', () => {
-        inputEl.value = el.dataset.msg;
-        send();
-      });
+      el.addEventListener('click', () => { inputEl.value = el.dataset.msg; send(); });
     });
     messagesEl.innerHTML = '';
     messagesEl.appendChild(welcomeEl);
     return;
   }
-
   welcomeEl.style.display = 'none';
   messagesEl.innerHTML = msgs.map(m => {
     const time = new Date(m.ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    const role = m.role;
-    const label = role === 'user' ? 'you' : activeAgent.name.toLowerCase();
+    const label = m.role === 'user' ? 'you' : activeAgent.name.toLowerCase();
     return `
-      <div class="msg ${role}">
-        <div class="msg-meta"><span>${label}</span> &middot; ${time}</div>
+      <div class="msg ${m.role}">
+        <div class="msg-meta"><span>${label}</span> · ${time}</div>
         <div class="msg-bubble">${formatText(m.text)}</div>
       </div>
     `;
   }).join('');
-
   messagesEl.scrollTop = messagesEl.scrollHeight;
 }
 
-// --- Format text (basic markdown) ---
 function formatText(text) {
   return text
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/`(.+?)`/g, '<code style="background:var(--surface-2);padding:1px 4px;border-radius:3px;font-size:12px">$1</code>')
+    .replace(/`(.+?)`/g, '<code style="background:var(--section-alt);padding:1px 5px;border-radius:4px;font-family:DM Mono,monospace;font-size:0.82em">$1</code>')
     .replace(/\n/g, '<br>');
 }
 
-// --- Send message ---
 async function send() {
   const text = inputEl.value.trim();
   if (!text || !activeAgent || sending) return;
-
   sending = true;
   sendBtn.disabled = true;
   inputEl.value = '';
   autoResize();
-
   conversations[activeAgent.id].push({ role: 'user', text, ts: Date.now() });
   renderMessages();
-
   typingEl.classList.add('visible');
   messagesEl.scrollTop = messagesEl.scrollHeight;
-
   try {
     const res = await fetch(CONFIG.runEndpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        workflow_id: activeAgent.id,
-        message: text,
-      }),
+      body: JSON.stringify({ workflow_id: activeAgent.id, message: text }),
     });
-
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
     const data = await res.json();
     const reply = data?.result?.output_text || data?.output_text || 'No response received.';
-
     conversations[activeAgent.id].push({ role: 'assistant', text: reply, ts: Date.now() });
   } catch (err) {
     conversations[activeAgent.id].push({
@@ -804,30 +787,22 @@ async function send() {
   }
 }
 
-// --- Toast ---
 function showToast(msg) {
   toastEl.textContent = msg;
   toastEl.classList.add('visible');
   setTimeout(() => toastEl.classList.remove('visible'), 4000);
 }
 
-// --- Auto-resize textarea ---
 function autoResize() {
   inputEl.style.height = 'auto';
   inputEl.style.height = Math.min(inputEl.scrollHeight, 120) + 'px';
 }
 
-// --- Events ---
 inputEl.addEventListener('input', autoResize);
 inputEl.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    send();
-  }
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
 });
 sendBtn.addEventListener('click', send);
-
-// --- Init ---
 renderSidebar();
 </script>
 </body>
