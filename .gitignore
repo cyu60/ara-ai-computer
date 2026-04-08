@@ -3,3 +3,5 @@
 .runtime-key.local
 __pycache__/
 *.pyc
+.vercel
+.gstack/
