@@ -3,12 +3,33 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const ARA_API = 'https://ara-api-prd.up.railway.app/v1/apps';
+  const ARA_API = 'https://api.ara.so/v1/apps';
   const APP_ID = 'app_6c99a373310042d395dc036a100948de';
   const RUNTIME_KEY = process.env.ARA_RUNTIME_KEY;
 
   if (!RUNTIME_KEY) {
     return res.status(500).json({ error: 'ARA_RUNTIME_KEY not configured' });
+  }
+
+  // Clone so we can mutate without touching the caller's body.
+  const body = { ...req.body };
+  const input = body.input || body;
+  const transcript = input.transcript || '';
+  const userMessage = input.message || '';
+
+  // Ara's /run only exposes `message` to the subagent LLM — `transcript` is ignored.
+  // Inline the prior transcript into the message so the LLM actually sees context.
+  // Without this, each turn is stateless and the agent loses memory of prior turns.
+  if (transcript && transcript.trim().length > 0 && userMessage) {
+    const inlined =
+      `PRIOR CONVERSATION (oldest → newest):\n${transcript}\n\n` +
+      `────────────────────────────────────\n` +
+      `LATEST MESSAGE (reply to this, informed by the full prior context above):\n${userMessage}`;
+    if (body.input) {
+      body.input = { ...input, message: inlined };
+    } else {
+      body.message = inlined;
+    }
   }
 
   try {
@@ -18,7 +39,7 @@ export default async function handler(req, res) {
         'Authorization': `Bearer ${RUNTIME_KEY}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(req.body),
+      body: JSON.stringify(body),
     });
 
     const data = await response.json();

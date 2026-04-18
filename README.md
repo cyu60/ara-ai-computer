@@ -5,7 +5,7 @@
 [![Ara SDK](https://img.shields.io/badge/Ara_SDK-0.1.1-purple?style=flat-square)](https://docs.ara.so)
 [![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
 
-> Built by [DayDreamers](https://daydreamers.club) for the Ara Hackathon Tour 2026
+> Built by [DayDreamers](https://daydreamers.live) for the Ara Hackathon Tour 2026
 
 Five real-world AI agent use cases running on [Ara](https://ara.so) — the agentic operating system. Each agent has its own cloud sandbox, persistent memory, and can hand off tasks to specialist sub-agents. Interact with all of them from a single chat interface.
 
